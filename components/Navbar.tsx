@@ -13,9 +13,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { useRouter } from "next/navigation"
 
 export default function Navbar() {
   const { user } = useAuth()
+  const router = useRouter()
 
   // Get initials for avatar fallback
   const getInitials = () => {
@@ -27,6 +29,15 @@ export default function Navbar() {
         .toUpperCase()
     }
     return user?.email?.substring(0, 2).toUpperCase() || "U"
+  }
+
+  const handleLogout = async () => {
+    try {
+      await logout()
+      router.push("/") // Redirect to the landing page after logout
+    } catch (error) {
+      console.error("Error logging out:", error)
+    }
   }
 
   return (
@@ -90,7 +101,7 @@ export default function Navbar() {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={logout} className="cursor-pointer text-destructive focus:text-destructive">
+                  <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-destructive focus:text-destructive">
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Log out</span>
                   </DropdownMenuItem>

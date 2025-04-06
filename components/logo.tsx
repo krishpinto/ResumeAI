@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils'
+import { motion } from 'motion/react'
 
 export const Logo = ({ className }: { className?: string }) => {
     return (

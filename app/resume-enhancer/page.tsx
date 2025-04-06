@@ -29,7 +29,7 @@ export default function ResumeEnhancer() {
       const base64Data = btoa(String.fromCharCode(...new Uint8Array(fileData)));
 
       const ai = new GoogleGenAI({
-        apiKey: "AIzaSyDBnfjAHRKYzeTOq-wETbJ4hkXNPdwLAns",
+        apiKey: process.env.NEXT_PUBLIC_GOOGLE_GENAI_API_KEY || "",
       });
 
       const contents = [

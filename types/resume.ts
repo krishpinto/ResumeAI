@@ -45,19 +45,52 @@ export interface AdditionalInfo {
   publications?: string;
 }
 
-export interface ResumeData {
-  id?: string;
+export type ResumeData = {
+  id?: string; // Optional ID for Firestore document
   title: string;
-  contact: ContactInfo;
+  contact: {
+    fullName: string;
+    email: string;
+    phoneNumber: string;
+    linkedIn?: string;
+    github?: string;
+    portfolio?: string;
+  };
   summary: string;
-  workExperience: WorkExperience[];
+  workExperience: Array<{
+    title: string;
+    company: string;
+    location?: string;
+    startDate: string;
+    endDate: string;
+    achievements: string[];
+  }>;
   skills: string[];
-  education: Education[];
-  certifications: Certification[];
-  projects: Project[];
-  additionalInfo: AdditionalInfo;
-  theme: ResumeTheme;
-}
+  education: Array<{
+    degree: string;
+    institution: string;
+    location?: string;
+    startDate: string;
+    endDate: string;
+  }>;
+  certifications: Array<{
+    name: string;
+    organization?: string;
+    year: string;
+  }>;
+  projects: Array<{
+    name: string;
+    description: string;
+    achievements: string[];
+  }>;
+  additionalInfo: {
+    languages: string[];
+    volunteerExperience?: string;
+    publications?: string;
+  };
+  theme: string;
+  lastUpdated?: string; // Add this property to track the last updated timestamp
+};
 
 // Default resume data
 export const defaultResumeData: ResumeData = {

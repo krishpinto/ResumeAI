@@ -1,63 +1,69 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { Eye, EyeOff, Loader2 } from "lucide-react"
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Separator } from "@/components/ui/separator"
-import { login, googleSignIn } from "@/lib/auth"
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import { login, googleSignIn } from "@/lib/auth";
 
 export default function LoginForm() {
-  const router = useRouter()
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [error, setError] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const [showPassword, setShowPassword] = useState(false)
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError("")
-    setIsLoading(true)
+    e.preventDefault();
+    setError("");
+    setIsLoading(true);
 
     try {
-      await login(email, password)
-      router.push("/dashboard")
+      await login(email, password);
+      router.push("/dashboard");
     } catch (err: any) {
-      setError(err.message || "Failed to login")
+      setError(err.message || "Failed to login");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleGoogleLogin = async () => {
-    setError("")
-    setIsLoading(true)
+    setError("");
+    setIsLoading(true);
 
     try {
-      await googleSignIn()
-      router.push("/dashboard")
+      await googleSignIn();
+      router.push("/dashboard");
     } catch (err: any) {
-      setError(err.message || "Failed to login with Google")
+      setError(err.message || "Failed to login with Google");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="mx-auto w-full max-w-sm space-y-6">
       <div className="space-y-2 text-center">
         <h1 className="text-3xl font-bold">Welcome back</h1>
-        <p className="text-muted-foreground">Enter your credentials to sign in</p>
+        <p className="text-muted-foreground">
+          Enter your credentials to sign in
+        </p>
       </div>
 
-      {error && <div className="rounded-md bg-destructive/15 px-4 py-3 text-sm text-destructive">{error}</div>}
+      {error && (
+        <div className="rounded-md bg-destructive/15 px-4 py-3 text-sm text-destructive">
+          {error}
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
@@ -101,8 +107,14 @@ export default function LoginForm() {
               onClick={() => setShowPassword(!showPassword)}
               disabled={isLoading}
             >
-              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              <span className="sr-only">{showPassword ? "Hide password" : "Show password"}</span>
+              {showPassword ? (
+                <EyeOff className="h-4 w-4" />
+              ) : (
+                <Eye className="h-4 w-4" />
+              )}
+              <span className="sr-only">
+                {showPassword ? "Hide password" : "Show password"}
+              </span>
             </Button>
           </div>
         </div>
@@ -124,15 +136,26 @@ export default function LoginForm() {
           <Separator className="w-full" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+          <span className="bg-background px-2 text-muted-foreground">
+            Or continue with
+          </span>
         </div>
       </div>
 
-      <Button variant="outline" className="w-full" onClick={handleGoogleLogin} disabled={isLoading}>
+      <Button
+        variant="outline"
+        className="w-full"
+        onClick={handleGoogleLogin}
+        disabled={isLoading}
+      >
         {isLoading ? (
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
         ) : (
-          <svg className="mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <svg
+            className="mr-2 h-4 w-4"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+          >
             <path
               fill="currentColor"
               d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -157,11 +180,13 @@ export default function LoginForm() {
 
       <p className="text-center text-sm text-muted-foreground">
         Don't have an account?{" "}
-        <Link href="/signup" className="font-medium text-primary underline underline-offset-4 hover:text-primary/90">
+        <Link
+          href="?tab=signup"
+          className="font-medium text-primary underline underline-offset-4 hover:text-primary/90"
+        >
           Sign up
         </Link>
       </p>
     </div>
-  )
+  );
 }
-

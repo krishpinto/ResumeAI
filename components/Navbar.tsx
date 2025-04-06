@@ -5,7 +5,6 @@ import { useAuth } from "@/context/AuthContext"
 import { logout } from "@/lib/auth"
 import { Button } from "@/components/ui/button"
 import { FileText, Home, Upload, User, LogOut } from "lucide-react"
-import { ModeToggle } from "@/components/ui/mode-toggle"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   DropdownMenu,
@@ -65,7 +64,6 @@ export default function Navbar() {
           </Link>
 
           <div className="flex items-center gap-3">
-            <ModeToggle />
 
             {user ? (
               <DropdownMenu>
@@ -99,7 +97,7 @@ export default function Navbar() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Link href="/login">
+              <Link href="/auth">
                 <Button size="sm">Sign In</Button>
               </Link>
             )}

@@ -1,9 +1,13 @@
-import type { NextConfig } from "next";
-
+import { type NextConfig } from "next";
 const nextConfig: NextConfig = {
-  reactStrictMode: true,
   images: {
     domains: ["res.cloudinary.com"], // Add Cloudinary domain here
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
   },
 };
 

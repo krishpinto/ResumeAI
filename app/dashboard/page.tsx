@@ -331,7 +331,7 @@ export default function Dashboard() {
         </Link>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border p-6">
+      <div className="bg-white rounded-lg shadow-sm border p-6">
         <Tabs defaultValue="all" className="w-full">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
             <TabsList>
@@ -344,7 +344,10 @@ export default function Dashboard() {
             {loading ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {Array.from({ length: 6 }).map((_, i) => (
-                  <Card key={i} className="overflow-hidden">
+                  <Card
+                    key={i}
+                    className="overflow-hidden bg-gray-100" // Added light gray background
+                  >
                     <CardHeader className="p-0">
                       <Skeleton className="h-48 w-full rounded-t-lg" />
                     </CardHeader>
@@ -360,7 +363,7 @@ export default function Dashboard() {
                 ))}
               </div>
             ) : resumes.length === 0 ? (
-              <div className="text-center py-12 bg-gray-50 dark:bg-gray-800 rounded-lg">
+              <div className="text-center py-12 bg-gray-50 rounded-lg">
                 <FileText className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                 <h2 className="text-xl font-semibold mb-2">No resumes found</h2>
                 <p className="text-muted-foreground mb-6 max-w-md mx-auto">
@@ -379,112 +382,10 @@ export default function Dashboard() {
                 {resumes.map((resume) => (
                   <Card
                     key={resume.id}
-                    className="group overflow-hidden transition-all duration-300 hover:shadow-md"
+                    className="group overflow-hidden transition-all duration-300 hover:shadow-md bg-gray-100" // Added light gray background
                   >
                     <CardHeader className="p-0 relative">
-                      <div className="relative h-48 bg-gray-100 dark:bg-gray-700 overflow-hidden">
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                          <Button
-                            variant="secondary"
-                            size="sm"
-                            className="gap-1"
-                            onClick={() => openPreview(resume.id)}
-                          >
-                            <Eye className="h-4 w-4" />
-                            Preview
-                          </Button>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="p-4">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h3 className="font-semibold text-lg line-clamp-1">
-                            {resume.title}
-                          </h3>
-                          <div className="flex items-center gap-2 mt-1 text-sm text-muted-foreground">
-                            <Clock className="h-3.5 w-3.5" />
-                            <span>
-                              {resume.lastUpdated
-                                ? new Date(
-                                    resume.lastUpdated
-                                  ).toLocaleDateString()
-                                : "No date"}
-                            </span>
-                          </div>
-                        </div>
-                        <Badge variant="outline" className="capitalize">
-                          {resume.theme || "Default"}
-                        </Badge>
-                      </div>
-                    </CardContent>
-                    <CardFooter className="p-4 pt-0 flex flex-wrap gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="gap-1 flex-1"
-                        onClick={() => downloadResume(resume.id)}
-                      >
-                        <Download className="h-4 w-4" />
-                        Download
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="gap-1 flex-1"
-                        onClick={() =>
-                          router.push(
-                            `/resume-builder/basic-info/?id=${resume.id}`
-                          )
-                        }
-                      >
-                        <Edit className="h-4 w-4" />
-                        Edit
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="gap-1 text-destructive hover:text-destructive"
-                        onClick={() => confirmDelete(resume.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                        Delete
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </TabsContent>
-
-          <TabsContent value="recent" className="mt-0">
-            {loading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {Array.from({ length: 3 }).map((_, i) => (
-                  <Card key={i} className="overflow-hidden">
-                    <CardHeader className="p-0">
-                      <Skeleton className="h-48 w-full rounded-t-lg" />
-                    </CardHeader>
-                    <CardContent className="p-4">
-                      <Skeleton className="h-6 w-3/4 mb-2" />
-                      <Skeleton className="h-4 w-1/2 mb-1" />
-                      <Skeleton className="h-4 w-1/3" />
-                    </CardContent>
-                    <CardFooter className="p-4 pt-0">
-                      <Skeleton className="h-9 w-full" />
-                    </CardFooter>
-                  </Card>
-                ))}
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {resumes.slice(0, 6).map((resume) => (
-                  <Card
-                    key={resume.id}
-                    className="group overflow-hidden transition-all duration-300 hover:shadow-md"
-                  >
-                    <CardHeader className="p-0 relative">
-                      <div className="relative h-48 bg-gray-100 dark:bg-gray-700 overflow-hidden">
+                      <div className="relative h-48 bg-gray-200 overflow-hidden">
                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                           <Button
                             variant="secondary"
@@ -560,138 +461,6 @@ export default function Dashboard() {
           </TabsContent>
         </Tabs>
       </div>
-
-      {/* Resume Preview Dialog */}
-      <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
-        <DialogContent className="max-w-4xl h-[90vh] p-0 overflow-hidden">
-          <DialogHeader className="p-6 pb-0">
-            <DialogTitle>
-              {selectedResume?.title || "Resume Preview"}
-            </DialogTitle>
-            <DialogDescription>
-              Preview how your resume will look to employers
-            </DialogDescription>
-          </DialogHeader>
-          <ScrollArea className="h-[calc(90vh-100px)] p-6">
-            <div className="bg-white rounded-lg shadow-lg p-8 max-w-[800px] mx-auto">
-              <div className="border-b pb-4 mb-6">
-                <h1 className="text-3xl font-bold text-gray-900">
-                  {selectedResume?.contact?.fullName ||
-                    sampleResumeData.contact.fullName}
-                </h1>
-                <div className="flex flex-wrap gap-x-4 gap-y-2 mt-2 text-sm text-gray-600">
-                  <div className="flex items-center gap-1">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-4 w-4"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <rect width="20" height="16" x="2" y="4" rx="2" />
-                      <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-                    </svg>
-                    <span>
-                      {selectedResume?.contact?.email ||
-                        sampleResumeData.contact.email}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-4 w-4"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                    </svg>
-                    <span>
-                      {selectedResume?.contact?.phoneNumber ||
-                        sampleResumeData.contact.phoneNumber}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Add other sections like Summary, Work Experience, Skills, etc. */}
-              <div className="mb-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-2">
-                  Summary
-                </h2>
-                <p className="text-gray-700">
-                  {selectedResume?.summary || sampleResumeData.summary}
-                </p>
-              </div>
-            </div>
-          </ScrollArea>
-          <DialogFooter className="p-6 pt-0">
-            <div className="flex justify-between w-full">
-              <Button variant="outline" onClick={() => setPreviewOpen(false)}>
-                Close
-              </Button>
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  className="gap-1"
-                  onClick={() =>
-                    selectedResume && downloadResume(selectedResume.id)
-                  }
-                >
-                  <Download className="h-4 w-4" />
-                  Download
-                </Button>
-                <Button
-                  className="gap-1"
-                  onClick={() => {
-                    setPreviewOpen(false);
-                    selectedResume &&
-                      router.push(
-                        `/resume-builder/basic-info/?id=${selectedResume.id}`
-                      );
-                  }}
-                >
-                  <Edit className="h-4 w-4" />
-                  Edit Resume
-                </Button>
-              </div>
-            </div>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Delete Confirmation Dialog */}
-      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Delete Resume</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to delete this resume? This action cannot be
-              undone.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setDeleteDialogOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={() => resumeToDelete && deleteResume(resumeToDelete)}
-            >
-              Delete
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

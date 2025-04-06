@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { FileText, Upload, ArrowRight } from "lucide-react";
+import { Settings2, Sparkles, Zap } from "lucide-react";
 import { ReactNode } from "react";
 
 export default function Features() {
@@ -10,54 +10,58 @@ export default function Features() {
           <h2 className="text-balance text-4xl font-semibold lg:text-5xl">
             Built to cover your needs
           </h2>
-          <p className="mt-4">
-            Create, enhance, and customize your resume with ease using our
-            powerful tools.
-          </p>
         </div>
         <div className="@min-4xl:max-w-full @min-4xl:grid-cols-3 mx-auto mt-8 grid max-w-sm gap-6 *:text-center md:mt-16">
-          {/* Card 1 */}
           <Card className="group shadow-zinc-950/5">
             <CardHeader className="pb-3">
               <CardDecorator>
-                <FileText className="size-6" aria-hidden />
+                <Zap className="size-6 text-yellow-500" aria-hidden />{" "}
+                {/* Yellow color */}
               </CardDecorator>
-              <h3 className="mt-6 font-medium">Create from Scratch</h3>
+
+              <h3 className="mt-6 font-medium">Customizable</h3>
             </CardHeader>
+
             <CardContent>
               <p className="text-sm">
-                Build your resume step-by-step with our intuitive builder.
+                Extensive customization options, allowing you to tailor every
+                aspect to meet your specific needs.
               </p>
             </CardContent>
           </Card>
 
-          {/* Card 2 */}
           <Card className="group shadow-zinc-950/5">
             <CardHeader className="pb-3">
               <CardDecorator>
-                <Upload className="size-6" aria-hidden />
+                <Settings2 className="size-6 text-blue-500" aria-hidden />{" "}
+                {/* Blue color */}
               </CardDecorator>
-              <h3 className="mt-6 font-medium">AI Enhancement</h3>
+
+              <h3 className="mt-6 font-medium">You have full control</h3>
             </CardHeader>
+
             <CardContent>
-              <p className="text-sm">
-                Upload your existing resume and let our AI improve it with
-                professional suggestions.
+              <p className="mt-3 text-sm">
+                From design elements to functionality, you have complete control
+                to create a unique and personalized experience.
               </p>
             </CardContent>
           </Card>
 
-          {/* Card 3 */}
           <Card className="group shadow-zinc-950/5">
             <CardHeader className="pb-3">
               <CardDecorator>
-                <ArrowRight className="size-6" aria-hidden />
+                <Sparkles className="size-6 text-purple-500" aria-hidden />{" "}
+                {/* Purple color */}
               </CardDecorator>
-              <h3 className="mt-6 font-medium">Easy Download</h3>
+
+              <h3 className="mt-6 font-medium">Powered By AI</h3>
             </CardHeader>
+
             <CardContent>
-              <p className="text-sm">
-                Download your resume in multiple formats for job applications.
+              <p className="mt-3 text-sm">
+                Elements to functionality, you have complete control to create a
+                unique experience.
               </p>
             </CardContent>
           </Card>

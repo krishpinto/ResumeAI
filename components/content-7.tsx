@@ -78,16 +78,9 @@ export default function ContentSection() {
           <div className="relative mt-6 sm:mt-0">
             <div className="bg-linear-to-b aspect-67/34 relative rounded-2xl from-zinc-300 to-transparent p-px dark:from-zinc-700">
               <Image
-                src="/resume-preview-dark.png"
-                className="hidden rounded-[15px] dark:block"
-                alt="Resume Preview Dark"
-                width={1206}
-                height={612}
-              />
-              <Image
-                src="/resume-preview-light.png"
-                className="rounded-[15px] shadow dark:hidden"
-                alt="Resume Preview Light"
+                src="/newphoto.png" // Path to the newphoto image in the public folder
+                className="rounded-[15px] shadow"
+                alt="Resume Preview"
                 width={1206}
                 height={612}
               />

@@ -10,6 +10,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        
         <AuthProvider>
           <main className="min-h-screen">
             <Navbar />

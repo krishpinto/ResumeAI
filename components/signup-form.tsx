@@ -1,7 +1,5 @@
 "use client";
 
-import type React from "react";
-
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -11,7 +9,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { register, googleSignIn } from "@/lib/auth";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+} from "firebase/auth";
+import { googleSignIn } from "@/lib/auth";
 
 export default function SignupForm() {
   const router = useRouter();
@@ -27,8 +30,20 @@ export default function SignupForm() {
     setIsLoading(true);
 
     try {
-      await register(email, password);
-      router.push("/dashboard");
+      const auth = getAuth();
+
+      // Register the user and get the user object
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+      if (userCredential.user) {
+        // Redirect to the dashboard and reload the page
+        router.push("/dashboard");
+        window.location.reload(); // Force page reload to ensure auth state is updated
+      }
     } catch (err: any) {
       setError(err.message || "Failed to create account");
     } finally {
@@ -43,6 +58,7 @@ export default function SignupForm() {
     try {
       await googleSignIn();
       router.push("/dashboard");
+      window.location.reload(); // Force page reload after redirect
     } catch (err: any) {
       setError(err.message || "Failed to sign up with Google");
     } finally {
@@ -64,6 +80,12 @@ export default function SignupForm() {
           {error}
         </div>
       )}
+
+      <p className="text-center text-sm text-red-500">
+        Email and password signup is not working because the auth state is not
+        being detected. Please sign up with Google instead. I'll fix it later (maybe).
+      </p>
+      {/* Because apparently, Firebase and email/password are not on speaking terms today. */}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">

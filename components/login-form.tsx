@@ -29,6 +29,7 @@ export default function LoginForm() {
     try {
       await login(email, password);
       router.push("/dashboard");
+      window.location.reload(); // Force page reload after redirect
     } catch (err: any) {
       setError(err.message || "Failed to login");
     } finally {
@@ -43,6 +44,7 @@ export default function LoginForm() {
     try {
       await googleSignIn();
       router.push("/dashboard");
+      window.location.reload(); // Force page reload after redirect
     } catch (err: any) {
       setError(err.message || "Failed to login with Google");
     } finally {

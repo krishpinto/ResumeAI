@@ -11,6 +11,14 @@ export default function AuthPage() {
 
   useEffect(() => {
     const auth = getAuth();
+
+    // Check if the user is already authenticated
+    if (auth.currentUser) {
+      router.push("/dashboard");
+      return;
+    }
+
+    // Listen for auth state changes
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         // Redirect to dashboard if the user is logged in

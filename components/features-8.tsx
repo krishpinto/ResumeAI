@@ -9,10 +9,10 @@ import {
 
 export default function FeaturesSection() {
   return (
-    <section className="bg-gray-50 py-16 md:py-32">
+    <section className= "py-16 md:py-32">
       <div className="mx-auto max-w-5xl px-6">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900">
+          <h2 className="text-3xl font-bold">
             Why Choose Our Resume Builder?
           </h2>
           <p className="mt-4 text-gray-600">
@@ -22,7 +22,7 @@ export default function FeaturesSection() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {/* Feature 1 */}
-          <div className="flex flex-col items-center text-center p-6 border rounded-lg bg-gray-100">
+          <div className="flex flex-col items-center text-center p-6 border rounded-lg">
             <FileText className="h-12 w-12 mb-4 text-primary" />
             <h3 className="text-xl font-bold mb-2">Create from Scratch</h3>
             <p className="text-muted-foreground">
@@ -31,7 +31,7 @@ export default function FeaturesSection() {
           </div>
 
           {/* Feature 2 */}
-          <div className="flex flex-col items-center text-center p-6 border rounded-lg bg-gray-100">
+          <div className="flex flex-col items-center text-center p-6 border rounded-lg">
             <Upload className="h-12 w-12 mb-4 text-primary" />
             <h3 className="text-xl font-bold mb-2">AI Enhancement</h3>
             <p className="text-muted-foreground">
@@ -40,7 +40,7 @@ export default function FeaturesSection() {
           </div>
 
           {/* Feature 3 */}
-          <div className="flex flex-col items-center text-center p-6 border rounded-lg bg-gray-100">
+          <div className="flex flex-col items-center text-center p-6 border rounded-lg">
             <Edit className="h-12 w-12 mb-4 text-primary" />
             <h3 className="text-xl font-bold mb-2">Easy Customization</h3>
             <p className="text-muted-foreground">
@@ -50,7 +50,7 @@ export default function FeaturesSection() {
           </div>
 
           {/* Feature 4 */}
-          <div className="flex flex-col items-center text-center p-6 border rounded-lg bg-gray-100">
+          <div className="flex flex-col items-center text-center p-6 border rounded-lg">
             <Layout className="h-12 w-12 mb-4 text-primary" />
             <h3 className="text-xl font-bold mb-2">Professional Templates</h3>
             <p className="text-muted-foreground">
@@ -59,7 +59,7 @@ export default function FeaturesSection() {
           </div>
 
           {/* Feature 5 */}
-          <div className="flex flex-col items-center text-center p-6 border rounded-lg bg-gray-100">
+          <div className="flex flex-col items-center text-center p-6 border rounded-lg">
             <CheckCircle className="h-12 w-12 mb-4 text-primary" />
             <h3 className="text-xl font-bold mb-2">ATS-Friendly</h3>
             <p className="text-muted-foreground">
@@ -68,7 +68,7 @@ export default function FeaturesSection() {
           </div>
 
           {/* Feature 6 */}
-          <div className="flex flex-col items-center text-center p-6 border rounded-lg bg-gray-100">
+          <div className="flex flex-col items-center text-center p-6 border rounded-lg">
             <Star className="h-12 w-12 mb-4 text-primary" />
             <h3 className="text-xl font-bold mb-2">Stand Out</h3>
             <p className="text-muted-foreground">

@@ -331,7 +331,7 @@ export default function Dashboard() {
         </Link>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border p-6">
+      <div className="rounded-lg shadow-sm border p-6">
         <Tabs defaultValue="all" className="w-full">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
             <TabsList>
@@ -346,8 +346,7 @@ export default function Dashboard() {
                 {Array.from({ length: 6 }).map((_, i) => (
                   <Card
                     key={i}
-                    className="overflow-hidden bg-gray-100" // Added light gray background
-                  >
+                    className="overflow-hidden">
                     <CardHeader className="p-0">
                       <Skeleton className="h-48 w-full rounded-t-lg" />
                     </CardHeader>
@@ -363,7 +362,7 @@ export default function Dashboard() {
                 ))}
               </div>
             ) : resumes.length === 0 ? (
-              <div className="text-center py-12 bg-gray-50 rounded-lg">
+              <div className="text-center py-12 rounded-lg">
                 <FileText className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                 <h2 className="text-xl font-semibold mb-2">No resumes found</h2>
                 <p className="text-muted-foreground mb-6 max-w-md mx-auto">

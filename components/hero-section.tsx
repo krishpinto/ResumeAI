@@ -30,7 +30,7 @@ export default function HeroSection() {
   return (
     <>
       <main className="overflow-hidden">
-        <section className="relative bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800">
+        <section className="relative bg-gradient-to-b">
           <div className="absolute inset-0 -z-10 size-full [background:radial-gradient(125%_125%_at_50%_100%,transparent_0%,var(--color-background)_75%)]"></div>
           <div className="mx-auto max-w-7xl px-6 pt-24 md:pt-36">
             <div className="text-center">

@@ -4,6 +4,7 @@ import Link from "next/link"
 import { useAuth } from "@/context/AuthContext"
 import { logout } from "@/lib/auth"
 import { Button } from "@/components/ui/button"
+import { ModeToggle } from "@/components/ModeToggle"
 import { FileText, Home, Upload, User, LogOut } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
@@ -113,6 +114,7 @@ export default function Navbar() {
               </Link>
             )}
           </div>
+          <ModeToggle /> {/* Add the ModeToggle component here */}
         </nav>
       </div>
     </header>

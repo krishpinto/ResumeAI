@@ -34,14 +34,14 @@ export default function AuthPage() {
   if (loading) {
     // Show a loading spinner or placeholder while resolving auth state
     return (
-      <main className="flex min-h-screen items-center justify-center bg-slate-50 p-4">
+      <main className="flex min-h-screen items-center justify-center p-4">
         <div>Loading...</div>
       </main>
     );
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-50 p-4">
+    <main className="flex min-h-screen items-center justify-center p-4">
       <AuthForm />
     </main>
   );

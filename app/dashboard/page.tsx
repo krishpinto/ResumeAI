@@ -7,22 +7,12 @@ import {
   collection,
   getDocs,
   query,
-  where,
   deleteDoc,
   doc,
   getDoc,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { getAuth } from "firebase/auth";
-import {
-  FileText,
-  Plus,
-  Download,
-  Edit,
-  Trash2,
-  Eye,
-  Clock,
-} from "lucide-react";
+import { FileText, Plus, Edit, Trash2, Eye, Clock } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -31,92 +21,17 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
   DialogFooter,
+  DialogDescription,
 } from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Skeleton } from "@/components/ui/skeleton";
-
-// Resume template thumbnails
-const resumeTemplates = {
-  modern: "/placeholder.svg?height=600&width=450",
-  professional: "/placeholder.svg?height=600&width=450",
-  creative: "/placeholder.svg?height=600&width=450",
-  minimal: "/placeholder.svg?height=600&width=450",
-  executive: "/placeholder.svg?height=600&width=450",
-  light: "/placeholder.svg?height=600&width=450",
-  dark: "/placeholder.svg?height=600&width=450",
-};
-
-// Sample resume data for preview
-const sampleResumeData = {
-  contact: {
-    fullName: "Alex Johnson",
-    email: "alex.johnson@example.com",
-    phoneNumber: "(555) 123-4567",
-    linkedIn: "linkedin.com/in/alexjohnson",
-    github: "github.com/alexjohnson",
-    portfolio: "alexjohnson.dev",
-  },
-  summary:
-    "Experienced software engineer with 5+ years of experience in full-stack development, specializing in React, Node.js, and cloud technologies.",
-  workExperience: [
-    {
-      title: "Senior Software Engineer",
-      company: "Tech Innovations Inc.",
-      startDate: "Jan 2021",
-      endDate: "Present",
-      achievements: [
-        "Led a team of 5 developers to deliver a major product feature that increased user engagement by 35%",
-        "Implemented CI/CD pipeline that reduced deployment time by 60%",
-        "Optimized database queries resulting in 40% faster page load times",
-      ],
-    },
-    {
-      title: "Software Developer",
-      company: "Digital Solutions LLC",
-      startDate: "Jun 2018",
-      endDate: "Dec 2020",
-      achievements: [
-        "Developed responsive web applications using React and TypeScript",
-        "Collaborated with UX designers to implement user-friendly interfaces",
-        "Mentored junior developers and conducted code reviews",
-      ],
-    },
-  ],
-  skills: [
-    "JavaScript",
-    "TypeScript",
-    "React",
-    "Node.js",
-    "AWS",
-    "Docker",
-    "GraphQL",
-    "MongoDB",
-    "PostgreSQL",
-  ],
-  education: [
-    {
-      degree: "Master of Computer Science",
-      institution: "University of Technology",
-      startDate: "2016",
-      endDate: "2018",
-    },
-    {
-      degree: "Bachelor of Science in Computer Engineering",
-      institution: "State University",
-      startDate: "2012",
-      endDate: "2016",
-    },
-  ],
-};
 
 export default function Dashboard() {
   const [resumes, setResumes] = useState<
@@ -137,20 +52,9 @@ export default function Dashboard() {
 
   useEffect(() => {
     const fetchResumes = async () => {
-      const auth = getAuth();
-      const userId = auth.currentUser?.uid;
-
-      if (!userId) {
-        console.error("User is not authenticated");
-        setLoading(false);
-        return;
-      }
-
       try {
-        const q = query(
-          collection(db, "resumes"),
-          where("userId", "==", userId)
-        );
+        // Fetch resumes for the current user
+        const q = query(collection(db, "resumes"));
         const querySnapshot = await getDocs(q);
 
         const fetchedResumes = querySnapshot.docs.map((doc) => ({
@@ -182,120 +86,6 @@ export default function Dashboard() {
     fetchResumes();
   }, []);
 
-  const deleteResume = async (id: string) => {
-    try {
-      await deleteDoc(doc(db, "resumes", id));
-      setResumes(resumes.filter((resume) => resume.id !== id));
-      setDeleteDialogOpen(false);
-    } catch (error) {
-      console.error("Error deleting resume:", error);
-    }
-  };
-
-  const confirmDelete = (id: string) => {
-    setResumeToDelete(id);
-    setDeleteDialogOpen(true);
-  };
-
-  const downloadResume = async (id: string) => {
-    try {
-      const docRef = doc(db, "resumes", id);
-      const docSnap = await getDoc(docRef);
-
-      if (docSnap.exists()) {
-        const resumeData = docSnap.data();
-
-        // Format the resume data into plain text
-        const resumeContent = `
-        Resume Title: ${resumeData.title || "N/A"}
-        Full Name: ${resumeData.contact?.fullName || "N/A"}
-        Email: ${resumeData.contact?.email || "N/A"}
-        Phone Number: ${resumeData.contact?.phoneNumber || "N/A"}
-        LinkedIn: ${resumeData.contact?.linkedIn || "N/A"}
-        GitHub: ${resumeData.contact?.github || "N/A"}
-        Portfolio: ${resumeData.contact?.portfolio || "N/A"}
-
-        Summary:
-        ${resumeData.summary || "N/A"}
-
-        Work Experience:
-        ${
-          resumeData.workExperience
-            ?.map(
-              (exp: any) =>
-                `- ${exp.title || "N/A"} at ${exp.company || "N/A"} (${
-                  exp.startDate || "N/A"
-                } - ${exp.endDate || "N/A"})\n  Achievements: ${
-                  exp.achievements?.join(", ") || "N/A"
-                }`
-            )
-            .join("\n") || "N/A"
-        }
-
-        Skills:
-        ${resumeData.skills?.join(", ") || "N/A"}
-
-        Education:
-        ${
-          resumeData.education
-            ?.map(
-              (edu: any) =>
-                `- ${edu.degree || "N/A"} from ${edu.institution || "N/A"} (${
-                  edu.startDate || "N/A"
-                } - ${edu.endDate || "N/A"})`
-            )
-            .join("\n") || "N/A"
-        }
-
-        Certifications:
-        ${
-          resumeData.certifications
-            ?.map(
-              (cert: any) => `- ${cert.name || "N/A"} (${cert.year || "N/A"})`
-            )
-            .join("\n") || "N/A"
-        }
-
-        Projects:
-        ${
-          resumeData.projects
-            ?.map(
-              (proj: any) =>
-                `- ${proj.name || "N/A"}: ${
-                  proj.description || "N/A"
-                }\n  Achievements: ${proj.achievements?.join(", ") || "N/A"}`
-            )
-            .join("\n") || "N/A"
-        }
-
-        Additional Information:
-        Languages: ${resumeData.additionalInfo?.languages?.join(", ") || "N/A"}
-        Volunteer Experience: ${
-          resumeData.additionalInfo?.volunteerExperience || "N/A"
-        }
-        Publications: ${resumeData.additionalInfo?.publications || "N/A"}
-      `;
-
-        // Create a Blob for the plain text file
-        const blob = new Blob([resumeContent], { type: "text/plain" });
-        const url = URL.createObjectURL(blob);
-
-        // Create a temporary <a> element to trigger the download
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = `${resumeData.title || "resume"}.txt`;
-        link.click();
-
-        // Clean up the URL object
-        URL.revokeObjectURL(url);
-      } else {
-        console.error("No such document!");
-      }
-    } catch (error) {
-      console.error("Error downloading resume:", error);
-    }
-  };
-
   const openPreview = async (id: string) => {
     try {
       const docRef = doc(db, "resumes", id);
@@ -305,13 +95,33 @@ export default function Dashboard() {
         const resumeData = docSnap.data();
         setSelectedResume({
           id: docSnap.id,
-          ...resumeData,
+          title: resumeData.title || "Untitled Resume",
+          name: resumeData.contact?.fullName || "No Name Provided",
+          summary: resumeData.summary || "No Summary Provided",
         });
         setPreviewOpen(true);
       }
     } catch (error) {
       console.error("Error fetching resume for preview:", error);
     }
+  };
+
+  const deleteResume = async () => {
+    if (!resumeToDelete) return;
+
+    try {
+      await deleteDoc(doc(db, "resumes", resumeToDelete));
+      setResumes(resumes.filter((resume) => resume.id !== resumeToDelete));
+      setDeleteDialogOpen(false);
+      setResumeToDelete(null);
+    } catch (error) {
+      console.error("Error deleting resume:", error);
+    }
+  };
+
+  const confirmDelete = (id: string) => {
+    setResumeToDelete(id);
+    setDeleteDialogOpen(true);
   };
 
   return (
@@ -333,20 +143,11 @@ export default function Dashboard() {
 
       <div className="rounded-lg shadow-sm border p-6">
         <Tabs defaultValue="all" className="w-full">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-            <TabsList>
-              <TabsTrigger value="all">All Resumes</TabsTrigger>
-              <TabsTrigger value="recent">Recent</TabsTrigger>
-            </TabsList>
-          </div>
-
           <TabsContent value="all" className="mt-0">
             {loading ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {Array.from({ length: 6 }).map((_, i) => (
-                  <Card
-                    key={i}
-                    className="overflow-hidden">
+                  <Card key={i} className="overflow-hidden">
                     <CardHeader className="p-0">
                       <Skeleton className="h-48 w-full rounded-t-lg" />
                     </CardHeader>
@@ -381,10 +182,10 @@ export default function Dashboard() {
                 {resumes.map((resume) => (
                   <Card
                     key={resume.id}
-                    className="group overflow-hidden transition-all duration-300 hover:shadow-md bg-gray-100" // Added light gray background
+                    className="group overflow-hidden transition-all duration-300 hover:shadow-md"
                   >
                     <CardHeader className="p-0 relative">
-                      <div className="relative h-48 bg-gray-200 overflow-hidden">
+                      <div className="relative h-48 overflow-hidden">
                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                           <Button
                             variant="secondary"
@@ -425,15 +226,6 @@ export default function Dashboard() {
                         variant="outline"
                         size="sm"
                         className="gap-1 flex-1"
-                        onClick={() => downloadResume(resume.id)}
-                      >
-                        <Download className="h-4 w-4" />
-                        Download
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="gap-1 flex-1"
                         onClick={() =>
                           router.push(
                             `/resume-builder/basic-info/?id=${resume.id}`
@@ -460,6 +252,49 @@ export default function Dashboard() {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Preview Dialog */}
+      {previewOpen && selectedResume && (
+        <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>{selectedResume.title}</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <h2 className="text-lg font-semibold">{selectedResume.name}</h2>
+              <p className="text-sm text-muted-foreground">
+                {selectedResume.summary}
+              </p>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {/* Delete Confirmation Dialog */}
+      {deleteDialogOpen && (
+        <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Confirm Delete</DialogTitle>
+              <DialogDescription>
+                Are you sure you want to delete this resume? This action cannot
+                be undone.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setDeleteDialogOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button variant="destructive" onClick={deleteResume}>
+                Delete
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }

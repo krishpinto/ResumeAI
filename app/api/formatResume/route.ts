@@ -1,140 +1,57 @@
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server';
+import type { ResumeData } from '@/types/resume';
+import {
+  validateResumeData,
+  removeEmptyFields,
+  generateProfessionalSummary,
+  enhanceBulletPoints,
+  cleanAndNormalizeResume,
+} from '@/lib/resumeProcessor';
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { extractedContent } = body;
+    const { extractedData } = body;
 
-    // Debugging: Log the received extracted content
-    console.log("Received Extracted Content:", extractedContent);
-
-    if (!extractedContent) {
+    if (!extractedData) {
       return NextResponse.json(
-        { error: "Missing extracted content" },
+        { error: 'Missing extracted data' },
         { status: 400 }
       );
     }
 
-    const structuredContent = {
-      summary: extractedContent.summary || "",
-      workExperience: extractedContent.workExperience || [],
-      skills: extractedContent.skills || [],
-      education: extractedContent.education || [],
-      certifications: extractedContent.certifications || [],
-      projects: extractedContent.projects || [],
-      additionalInfo: extractedContent.additionalInfo || {
-        languages: [],
-        volunteerExperience: "",
-        publications: "",
-      },
-      contact: extractedContent.contact || {
-        fullName: "",
-        phoneNumber: "",
-        email: "",
-        linkedIn: "",
-        github: "",
-        portfolio: "",
-      },
-    };
+    // Validate and clean the extracted data
+    let resumeData: ResumeData = validateResumeData(extractedData);
 
-    // Replace placeholders in the template with the extracted content
-    const formattedResume = `
-${structuredContent.contact.fullName || "[Full Name]"}
-${structuredContent.contact.phoneNumber || "[Phone Number]"} | ${
-      structuredContent.contact.email || "[Email]"
-    } | ${structuredContent.contact.linkedIn || "[LinkedIn Profile]"} | ${
-      structuredContent.contact.github || "[GitHub]"
-    } | ${structuredContent.contact.portfolio || "[Portfolio/Website]"}
+    // Apply smart formatting and normalization
+    resumeData = cleanAndNormalizeResume(resumeData);
 
-Professional Summary
-${structuredContent.summary || "[Summary not provided]"}
-
-Work Experience
-${
-  structuredContent.workExperience
-    ?.map(
-      (job: any) => `
-${job.title || "[Job Title]"} – ${job.company || "[Company Name]"}, ${
-        job.location || "[Location]"
-      } | ${job.startDate || "[Start Date]"} – ${job.endDate || "[End Date]"}
-
-${job.achievements
-  ?.map((achievement: string) => `- ${achievement || "[Achievement]"}`)
-  .join("\n")}
-`
-    )
-    .join("\n") || "[Work experience not provided]"
-}
-
-Skills
-${structuredContent.skills?.join(" | ") || "[Skills not provided]"}
-
-Education
-${
-  structuredContent.education
-    ?.map(
-      (edu: any) => `
-${edu.degree || "[Degree]"} – ${edu.institution || "[Institution]"}, ${
-        edu.location || "[Location]"
-      } | ${edu.startDate || "[Start Date]"} – ${edu.endDate || "[End Date]"}
-`
-    )
-    .join("\n") || "[Education not provided]"
-}
-
-Certifications & Training (if applicable)
-${
-  structuredContent.certifications
-    ?.map(
-      (cert: any) => `
-${cert.name || "[Certification Name]"}, ${
-        cert.organization || "[Issuing Organization]"
-      }, ${cert.year || "[Year]"}
-`
-    )
-    .join("\n") || "[Certifications not provided]"
-}
-
-Projects (if applicable)
-${
-  structuredContent.projects
-    ?.map(
-      (project: any) => `
-${project.name || "[Project Name]"} – ${
-        project.description || "[Project Description]"
-      }
-
-${project.achievements
-  ?.map((achievement: string) => `- ${achievement || "[Achievement]"}`)
-  .join("\n")}
-`
-    )
-    .join("\n") || "[Projects not provided]"
-}
-
-Additional Information (if applicable)
-Languages: ${
-      structuredContent.additionalInfo.languages?.join(", ") ||
-      "[Languages not provided]"
+    // Generate summary if still missing
+    if (!resumeData.summary) {
+      resumeData.summary = generateProfessionalSummary(resumeData);
     }
-Volunteer Experience: ${
-      structuredContent.additionalInfo.volunteerExperience ||
-      "[Volunteer Experience not provided]"
-    }
-Publications: ${
-      structuredContent.additionalInfo.publications ||
-      "[Publications not provided]"
-    }
-    `;
 
-    // Debugging: Log the formatted resume
-    console.log("Formatted Resume:", formattedResume);
+    // Enhance all bullet points
+    resumeData.workExperience = resumeData.workExperience.map(exp => ({
+      ...exp,
+      achievements: exp.achievements.map(a => enhanceBulletPoints(a)),
+    }));
 
-    return NextResponse.json({ formattedResume });
+    resumeData.projects = resumeData.projects.map(proj => ({
+      ...proj,
+      achievements: proj.achievements.map(a => enhanceBulletPoints(a)),
+    }));
+
+    return NextResponse.json({
+      success: true,
+      data: resumeData,
+    });
   } catch (error) {
-    console.error("Error formatting resume:", error);
+    console.error('Error formatting resume:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Failed to format resume';
+    
     return NextResponse.json(
-      { error: "Failed to format resume" },
+      { error: errorMessage, success: false },
       { status: 500 }
     );
   }

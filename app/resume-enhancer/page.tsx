@@ -1,234 +1,248 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Download, Upload } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { GoogleGenAI } from "@google/genai";
+import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Upload, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
+import type { ResumeData } from '@/types/resume';
+import { ResumePreview } from '@/components/ResumePreview';
+import { extractTextFromPDF, validatePDFFile } from '@/lib/pdfProcessor';
+
+type Step = 'upload' | 'extracting' | 'extracted' | 'formatting' | 'preview';
 
 export default function ResumeEnhancer() {
-  const [responseText, setResponseText] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
-  const [fileName, setFileName] = useState<string>("");
-  const [activeTab, setActiveTab] = useState<string>("upload");
+  const [currentStep, setCurrentStep] = useState<Step>('upload');
+  const [fileName, setFileName] = useState<string>('');
+  const [resumeData, setResumeData] = useState<ResumeData | null>(null);
+  const [error, setError] = useState<string>('');
+  const [extractionProgress, setExtractionProgress] = useState<string>('');
 
-  const handleFileUpload = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
+    setError('');
     setFileName(file.name);
-    setLoading(true);
-    setActiveTab("preview");
 
     try {
-      // Step 1: Extract content using GoogleGenAI
-      const fileData = await file.arrayBuffer();
-      const base64Data = btoa(String.fromCharCode(...new Uint8Array(fileData)));
+      // Validate file
+      await validatePDFFile(file);
 
-      const ai = new GoogleGenAI({
-        apiKey: process.env.NEXT_PUBLIC_GOOGLE_GENAI_API_KEY || "",
-      });
+      // Step 1: Extract text from PDF
+      setCurrentStep('extracting');
+      setExtractionProgress('Extracting text from PDF...');
+      const extractedText = await extractTextFromPDF(file);
 
-      const contents = [
-        {
-          text: `Extract the following details from the document in a structured JSON format. Ensure all fields are included, even if they are empty:
-
-{
-  "contact": {
-    "fullName": "",
-    "phoneNumber": "",
-    "email": "",
-    "linkedIn": "",
-    "github": "",
-    "portfolio": ""
-  },
-  "summary": "",
-  "workExperience": [
-    {
-      "title": "",
-      "company": "",
-      "location": "",
-      "startDate": "",
-      "endDate": "",
-      "achievements": ["", "", ""]
-    }
-  ],
-  "skills": ["", "", ""],
-  "education": [
-    {
-      "degree": "",
-      "institution": "",
-      "location": "",
-      "startDate": "",
-      "endDate": ""
-    }
-  ],
-  "certifications": [
-    {
-      "name": "",
-      "organization": "",
-      "year": ""
-    }
-  ],
-  "projects": [
-    {
-      "name": "",
-      "description": "",
-      "achievements": ["", ""]
-    }
-  ],
-  "additionalInfo": {
-    "languages": ["", ""],
-    "volunteerExperience": "",
-    "publications": ""
-  }
-}
-`,
-        },
-        {
-          inlineData: {
-            mimeType: file.type,
-            data: base64Data,
-          },
-        },
-      ];
-
-      const response = await ai.models.generateContent({
-        model: "gemini-1.5-flash",
-        contents: contents,
-      });
-
-      // Debugging: Log the raw response
-      console.log("Raw Response:", response);
-
-      // Step 2: Validate and sanitize the response
-      let extractedContent;
-      try {
-        const rawText = response.text || "";
-        const sanitizedText = rawText.trim().replace(/```json|```/g, "");
-        extractedContent = JSON.parse(sanitizedText);
-      } catch (parseError) {
-        console.error("Error parsing JSON:", parseError);
-        throw new Error("Invalid JSON response from the AI model.");
+      if (!extractedText || extractedText.trim().length === 0) {
+        throw new Error('No text could be extracted from the PDF. Please ensure the PDF contains readable text.');
       }
 
-      // Debugging: Log the extracted content
-      console.log("Extracted Content:", extractedContent);
+      setExtractionProgress('Parsing resume data with AI...');
+      setCurrentStep('extracted');
 
-      // Step 3: Format the extracted content into the resume template
-      const formatResponse = await fetch("/api/formatResume", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ extractedContent }),
+      // Step 2: Send to extraction API
+      const extractResponse = await fetch('/api/extractResume', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ extractedText }),
+      });
+
+      if (!extractResponse.ok) {
+        const errorData = await extractResponse.json();
+        throw new Error(errorData.error || 'Failed to extract resume data');
+      }
+
+      const { data: extractedData } = await extractResponse.json();
+
+      setExtractionProgress('Formatting resume with ATS optimization...');
+      setCurrentStep('formatting');
+
+      // Step 3: Format the extracted data
+      const formatResponse = await fetch('/api/formatResume', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ extractedData }),
       });
 
       if (!formatResponse.ok) {
-        throw new Error("Failed to format resume");
+        const errorData = await formatResponse.json();
+        throw new Error(errorData.error || 'Failed to format resume');
       }
 
-      const { formattedResume } = await formatResponse.json();
-
-      // Step 4: Update the state with the formatted resume
-      setResponseText(formattedResume);
+      const { data: formattedData } = await formatResponse.json();
+      setResumeData(formattedData);
+      setCurrentStep('preview');
     } catch (error) {
-      console.error("Error processing the file:", error);
-      setResponseText("An error occurred while processing the file.");
-    } finally {
-      setLoading(false);
+      console.error('Error processing resume:', error);
+      const errorMessage = error instanceof Error ? error.message : 'An error occurred while processing your resume';
+      setError(errorMessage);
+      setCurrentStep('upload');
     }
   };
 
-  const handleDownload = () => {
-    const blob = new Blob([responseText], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "enhanced_resume.txt";
-    link.click();
-    URL.revokeObjectURL(url);
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
   };
 
-  return (
-    <div className="container py-8">
-      <div className="flex flex-col items-center max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-2">Resume Enhancer</h1>
-        <p className="text-muted-foreground mb-8 text-center">
-          Upload your existing resume and our AI will enhance it with
-          professional language and formatting
-        </p>
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+      const input = document.getElementById('file-upload') as HTMLInputElement;
+      if (input) {
+        input.files = files;
+        handleFileUpload({ target: input } as React.ChangeEvent<HTMLInputElement>);
+      }
+    }
+  };
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-8">
-            <TabsTrigger value="upload">Upload Resume</TabsTrigger>
-            <TabsTrigger value="preview" disabled={!responseText && !loading}>
-              Enhanced Resume
-            </TabsTrigger>
-          </TabsList>
+  const handleRetry = () => {
+    setCurrentStep('upload');
+    setFileName('');
+    setResumeData(null);
+    setError('');
+    setExtractionProgress('');
+  };
 
-          <TabsContent value="upload" className="w-full">
-            <Card>
-              <CardContent className="pt-6">
-                <div className="flex flex-col items-center justify-center p-8 border-2 border-dashed rounded-lg">
-                  <Upload className="h-10 w-10 text-muted-foreground mb-4" />
-                  <p className="mb-2 text-sm text-muted-foreground">
-                    <span className="font-semibold">Click to upload</span> or
-                    drag and drop
-                  </p>
-                  <p className="text-xs text-muted-foreground mb-4">
-                    PDF (MAX. 5MB)
-                  </p>
-                  <label
-                    htmlFor="file-upload"
-                    className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 cursor-pointer"
-                  >
-                    Choose File
-                  </label>
-                  <input
-                    id="file-upload"
-                    type="file"
-                    accept="application/pdf"
-                    onChange={handleFileUpload}
-                    className="hidden"
-                  />
-                  {fileName && (
-                    <p className="mt-2 text-sm">Selected: {fileName}</p>
-                  )}
+  // Step 1: Upload
+  if (currentStep === 'upload') {
+    return (
+      <main className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 py-12 px-4">
+        <div className="max-w-2xl mx-auto">
+          <div className="text-center mb-12">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">Smart Resume Formatter</h1>
+            <p className="text-xl text-gray-600">
+              Upload your resume and let our AI extract, parse, and format it into an ATS-optimized document
+            </p>
+          </div>
+
+          <Card className="border-2 border-gray-200 shadow-lg">
+            <CardContent className="pt-8">
+              <div
+                className="flex flex-col items-center justify-center p-12 border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-400 transition-colors cursor-pointer bg-white"
+                onDragOver={handleDragOver}
+                onDrop={handleDrop}
+              >
+                <Upload className="w-16 h-16 text-gray-400 mb-4" />
+                <p className="text-lg font-semibold text-gray-900 mb-2">
+                  Click to upload or drag and drop
+                </p>
+                <p className="text-sm text-gray-500 mb-6">
+                  PDF files up to 10MB
+                </p>
+                <label
+                  htmlFor="file-upload"
+                  className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors cursor-pointer"
+                >
+                  Choose File
+                </label>
+                <input
+                  id="file-upload"
+                  type="file"
+                  accept="application/pdf"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                />
+              </div>
+
+              {error && (
+                <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h3 className="font-semibold text-red-900">Error</h3>
+                    <p className="text-red-700 text-sm mt-1">{error}</p>
+                  </div>
                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </main>
+    );
+  }
 
-          <TabsContent value="preview" className="w-full">
-            <Card>
-              <CardContent className="pt-6">
-                {loading ? (
-                  <div className="flex flex-col items-center justify-center p-8">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
-                    <p>Enhancing your resume...</p>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    <div className="flex justify-end">
-                      <Button className="gap-2" onClick={handleDownload}>
-                        <Download className="h-4 w-4" />
-                        Download Enhanced Resume
-                      </Button>
+  // Step 2 & 3: Extracting and Formatting
+  if (currentStep === 'extracting' || currentStep === 'extracted' || currentStep === 'formatting') {
+    return (
+      <main className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 py-12 px-4">
+        <div className="max-w-2xl mx-auto">
+          <Card className="border-2 border-gray-200 shadow-lg">
+            <CardContent className="pt-12">
+              <div className="flex flex-col items-center justify-center p-8">
+                <div className="mb-6">
+                  <Loader2 className="w-12 h-12 text-blue-600 animate-spin" />
+                </div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">Processing Your Resume</h2>
+                <p className="text-gray-600 text-center mb-6">{extractionProgress}</p>
+                
+                {/* Progress indicator */}
+                <div className="w-full space-y-3">
+                  <div className="flex items-center gap-3">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-semibold ${
+                      currentStep === 'extracting' ? 'bg-blue-600' : 'bg-green-600'
+                    }`}>
+                      {currentStep === 'extracting' ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
                     </div>
-                    <div className="bg-muted/30 p-6 rounded-lg">
-                      <pre className="whitespace-pre-wrap font-sans text-sm">
-                        {responseText}
-                      </pre>
-                    </div>
+                    <span className="text-gray-700">Extracting text from PDF</span>
                   </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
-      </div>
-    </div>
-  );
+
+                  <div className="flex items-center gap-3">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-semibold ${
+                      currentStep === 'extracted' ? 'bg-blue-600' : currentStep !== 'extracting' ? 'bg-green-600' : 'bg-gray-300'
+                    }`}>
+                      {currentStep === 'extracted' ? <Loader2 className="w-4 h-4 animate-spin" /> : currentStep !== 'extracting' ? <CheckCircle2 className="w-4 h-4" /> : <span>2</span>}
+                    </div>
+                    <span className="text-gray-700">Parsing with AI</span>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-semibold ${
+                      currentStep === 'formatting' ? 'bg-blue-600' : currentStep === 'preview' ? 'bg-green-600' : 'bg-gray-300'
+                    }`}>
+                      {currentStep === 'formatting' ? <Loader2 className="w-4 h-4 animate-spin" /> : currentStep === 'preview' ? <CheckCircle2 className="w-4 h-4" /> : <span>3</span>}
+                    </div>
+                    <span className="text-gray-700">Formatting with ATS optimization</span>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </main>
+    );
+  }
+
+  // Step 4: Preview and Download
+  if (currentStep === 'preview' && resumeData) {
+    return (
+      <main className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 py-12 px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="mb-8">
+            <Button
+              variant="outline"
+              onClick={handleRetry}
+              className="mb-6"
+            >
+              Upload Another Resume
+            </Button>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Your Formatted Resume</h1>
+            <p className="text-gray-600">
+              Your resume has been extracted, parsed, and optimized for ATS systems. Edit any information below and download your PDF.
+            </p>
+          </div>
+
+          <div className="bg-white rounded-lg shadow-lg p-8">
+            <ResumePreview
+              data={resumeData}
+              onDataChange={setResumeData}
+            />
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  return null;
 }

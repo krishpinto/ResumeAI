@@ -1,7 +1,10 @@
+import { Inter } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import { ThemeProvider } from "@/components/theme-provider";
+
+const inter = Inter({ subsets: ["latin"], variable: "--font-geist-sans" });
 
 export default function RootLayout({
   children,
@@ -10,7 +13,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body>
+      <body className={`${inter.variable} font-sans antialiased`}>
       <ThemeProvider
             attribute="class"
             defaultTheme="system"

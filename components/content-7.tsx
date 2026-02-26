@@ -3,9 +3,9 @@ import Image from "next/image";
 
 export default function ContentSection() {
   return (
-    <section className="py-16 md:py-32">
+    <section className="py-24">
       <div className="mx-auto max-w-5xl space-y-8 px-6 md:space-y-16">
-        <h2 className="relative z-10 max-w-xl text-4xl font-medium lg:text-5xl text-gray-900 dark:text-white">
+        <h2 className="relative z-10 max-w-xl text-4xl font-bold lg:text-5xl tracking-tight text-foreground">
           Build Your Resume with Ease
         </h2>
         <div className="grid gap-6 sm:grid-cols-2 md:gap-12 lg:gap-24">
@@ -76,10 +76,10 @@ export default function ContentSection() {
 
           {/* Right Content */}
           <div className="relative mt-6 sm:mt-0">
-            <div className="bg-linear-to-b aspect-67/34 relative rounded-2xl from-zinc-300 to-transparent p-px dark:from-zinc-700">
+            <div className="relative rounded-2xl border shadow-xl overflow-hidden bg-background">
               <Image
                 src="/newphoto.png" // Path to the newphoto image in the public folder
-                className="rounded-[15px] shadow"
+                className="w-full h-auto object-cover"
                 alt="Resume Preview"
                 width={1206}
                 height={612}

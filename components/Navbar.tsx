@@ -87,9 +87,7 @@ export default function Navbar() {
           <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="navbar-social-link" aria-label="GitHub">
             <Github className="h-3.5 w-3.5" />
           </a>
-          <div className="dark">
-            <ThemeSwitcher />
-          </div>
+          <ThemeSwitcher />
 
           {user ? (
             <DropdownMenu>

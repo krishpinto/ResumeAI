@@ -6,6 +6,7 @@ import { ArrowRight, FileText, Upload } from "lucide-react"
 export default function HeroSection() {
   return (
     <div
+      className="hero-root"
       style={{
         position: "relative",
         minHeight: "100vh",
@@ -14,7 +15,6 @@ export default function HeroSection() {
         alignItems: "center",
         justifyContent: "center",
         overflow: "hidden",
-        background: "#050505",
       }}
     >
       {/* Subtle diagonal line pattern */}
@@ -27,14 +27,14 @@ export default function HeroSection() {
           backgroundImage: `
             repeating-linear-gradient(
               -45deg,
-              rgba(255,255,255,0.07) 0px,
-              rgba(255,255,255,0.07) 1px,
+              rgba(255,255,255,0.04) 0px,
+              rgba(255,255,255,0.04) 1px,
               transparent 1px,
-              transparent 48px
+              transparent 52px
             )
           `,
-          maskImage: "radial-gradient(ellipse 90% 85% at 50% 50%, black 30%, transparent 100%)",
-          WebkitMaskImage: "radial-gradient(ellipse 90% 85% at 50% 50%, black 30%, transparent 100%)",
+          maskImage: "radial-gradient(ellipse 65% 65% at 50% 50%, black 35%, transparent 100%)",
+          WebkitMaskImage: "radial-gradient(ellipse 65% 65% at 50% 50%, black 35%, transparent 100%)",
         }}
       />
 

@@ -27,14 +27,14 @@ export default function HeroSection() {
           backgroundImage: `
             repeating-linear-gradient(
               -45deg,
-              rgba(255,255,255,0.025) 0px,
-              rgba(255,255,255,0.025) 1px,
+              rgba(255,255,255,0.07) 0px,
+              rgba(255,255,255,0.07) 1px,
               transparent 1px,
-              transparent 60px
+              transparent 48px
             )
           `,
-          maskImage: "radial-gradient(ellipse 70% 70% at 50% 50%, black 40%, transparent 100%)",
-          WebkitMaskImage: "radial-gradient(ellipse 70% 70% at 50% 50%, black 40%, transparent 100%)",
+          maskImage: "radial-gradient(ellipse 90% 85% at 50% 50%, black 30%, transparent 100%)",
+          WebkitMaskImage: "radial-gradient(ellipse 90% 85% at 50% 50%, black 30%, transparent 100%)",
         }}
       />
 

@@ -935,3 +935,72 @@
   max-width: 1100px;
   margin: 0 auto;
 }
+
+/* ── Global Side Margin Lines ────────────────────────────────────────── */
+/* Fixed vertical lines pinned to both edges of the viewport, visible on scroll */
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 8%,
+    rgba(255, 255, 255, 0.1) 92%,
+    transparent 100%
+  );
+  z-index: 9999;
+  pointer-events: none;
+}
+
+body::before {
+  left: 48px;
+}
+
+body::after {
+  right: 48px;
+}
+
+/* Tick marks along the side lines — rendered via a repeating gradient */
+body::before {
+  background:
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(255, 255, 255, 0.1) 8%,
+      rgba(255, 255, 255, 0.1) 92%,
+      transparent 100%
+    );
+}
+
+/* Secondary inner margin lines, slightly more inset and fainter */
+main::before,
+main::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(255, 255, 255, 0.04) 5%,
+    rgba(255, 255, 255, 0.04) 95%,
+    transparent 100%
+  );
+  z-index: 9998;
+  pointer-events: none;
+}
+
+main::before {
+  left: 80px;
+}
+
+main::after {
+  right: 80px;
+}
+

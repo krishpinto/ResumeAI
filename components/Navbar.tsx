@@ -3,9 +3,8 @@
 import Link from "next/link"
 import { useAuth } from "@/context/AuthContext"
 import { logout } from "@/lib/auth"
-import { Button } from "@/components/ui/button"
-import { ModeToggle } from "@/components/ModeToggle"
-import { FileText, Home, Upload, User, LogOut, Menu } from "lucide-react"
+import { ThemeSwitcher } from "@/components/theme-switcher"
+import { FileText, User, LogOut, Github } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   DropdownMenu,
@@ -14,22 +13,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useRouter, usePathname } from "next/navigation"
+
+const navLinks = [
+  { href: "/", label: "Home" },
+  { href: "/dashboard", label: "Dashboard" },
+  { href: "/resume-builder/basic-info", label: "Create Resume" },
+  { href: "/resume-enhancer", label: "Enhance Resume" },
+]
 
 export default function Navbar() {
   const { user } = useAuth()
   const router = useRouter()
-  const [isOpen, setIsOpen] = useState(false)
+  const pathname = usePathname()
 
-  // Get initials for avatar fallback
   const getInitials = () => {
     if (user?.displayName) {
       return user.displayName
@@ -44,130 +41,95 @@ export default function Navbar() {
   const handleLogout = async () => {
     try {
       await logout()
-      router.push("/") // Redirect to the landing page after logout
+      router.push("/")
     } catch (error) {
       console.error("Error logging out:", error)
     }
   }
 
-  const NavItems = () => (
-    <>
-      <Link href="/" onClick={() => setIsOpen(false)}>
-        <Button variant="ghost" size="sm" className="w-full justify-start">
-          <Home className="mr-2 h-4 w-4" />
-          Home
-        </Button>
-      </Link>
-      <Link href="/dashboard" onClick={() => setIsOpen(false)}>
-        <Button variant="ghost" size="sm" className="w-full justify-start">
-          <Home className="mr-2 h-4 w-4" />
-          Dashboard
-        </Button>
-      </Link>
-      <Link href="/resume-builder/basic-info" onClick={() => setIsOpen(false)}>
-        <Button variant="ghost" size="sm" className="w-full justify-start">
-          <FileText className="mr-2 h-4 w-4" />
-          Create Resume
-        </Button>
-      </Link>
-      <Link href="/resume-enhancer" onClick={() => setIsOpen(false)}>
-        <Button variant="ghost" size="sm" className="w-full justify-start">
-          <Upload className="mr-2 h-4 w-4" />
-          Enhance Resume
-        </Button>
-      </Link>
-    </>
-  )
+  const isActive = (href: string) => {
+    if (href === "/") return pathname === "/"
+    return pathname.startsWith(href)
+  }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center justify-between px-4">
-        <div className="flex items-center gap-2">
-            <Sheet open={isOpen} onOpenChange={setIsOpen}>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="md:hidden">
-                  <Menu className="h-5 w-5" />
-                  <span className="sr-only">Toggle menu</span>
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left">
-                <SheetHeader>
-                  <SheetTitle>ResumeAI</SheetTitle>
-                </SheetHeader>
-                <div className="flex flex-col gap-4 py-4">
-                  <NavItems />
-                </div>
-              </SheetContent>
-            </Sheet>
-          <Link href="/" className="flex items-center gap-2 font-semibold">
-            <FileText className="h-5 w-5" />
+    <header className="navbar-root sticky top-0 z-50 w-full">
+      <div className="navbar-inner">
+
+        {/* Left — Logo */}
+        <div className="navbar-left">
+          <Link href="/" className="navbar-logo">
+            <FileText className="h-4 w-4 navbar-logo-icon" />
             <span>ResumeAI</span>
           </Link>
         </div>
 
-        <nav className="hidden md:flex items-center gap-4">
-          <Link href="/">
-            <Button variant="ghost" size="sm">
-              Home
-            </Button>
-          </Link>
-          <Link href="/dashboard">
-            <Button variant="ghost" size="sm">
-              Dashboard
-            </Button>
-          </Link>
-          <Link href="/resume-builder/basic-info">
-            <Button variant="ghost" size="sm">
-              Create Resume
-            </Button>
-          </Link>
-          <Link href="/resume-enhancer">
-            <Button variant="ghost" size="sm">
-              Enhance Resume
-            </Button>
-          </Link>
+        {/* Center — Nav links */}
+        <nav className="navbar-links">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={`navbar-link ${isActive(link.href) ? "active" : ""}`}
+            >
+              {link.label}
+            </Link>
+          ))}
         </nav>
 
-        <div className="flex items-center gap-3">
-            <ModeToggle />
+        {/* Right — Actions */}
+        <div className="navbar-right">
+          <a href="https://x.com" target="_blank" rel="noopener noreferrer" className="navbar-social-link" aria-label="X (Twitter)">
+            <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.736-8.849L1.254 2.25H8.08l4.253 5.622L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+            </svg>
+          </a>
+          <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="navbar-social-link" aria-label="GitHub">
+            <Github className="h-3.5 w-3.5" />
+          </a>
+          <div className="dark">
+            <ThemeSwitcher />
+          </div>
 
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="rounded-full h-8 w-8 p-0">
-                  <Avatar className="h-8 w-8">
+                <button className="navbar-avatar-btn" aria-label="User menu">
+                  <Avatar className="h-7 w-7">
                     <AvatarImage src={user?.photoURL || ""} alt={user?.displayName || "Profile"} />
-                    <AvatarFallback>{getInitials()}</AvatarFallback>
+                    <AvatarFallback className="navbar-avatar-fallback">{getInitials()}</AvatarFallback>
                   </Avatar>
-                </Button>
+                </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <div className="flex items-center justify-start gap-2 p-2">
-                  <div className="flex flex-col space-y-1 leading-none">
-                    {user.displayName && <p className="font-medium">{user.displayName}</p>}
-                    {user.email && <p className="text-xs text-muted-foreground">{user.email}</p>}
-                  </div>
+              <DropdownMenuContent align="end" className="navbar-dropdown w-52">
+                <div className="px-3 py-2">
+                  {user.displayName && <p className="text-sm font-medium text-white">{user.displayName}</p>}
+                  {user.email && <p className="text-xs text-zinc-500">{user.email}</p>}
                 </div>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
+                <DropdownMenuSeparator className="bg-zinc-800" />
+                <DropdownMenuItem asChild className="navbar-dropdown-item">
                   <Link href="/profile" className="cursor-pointer w-full">
-                    <User className="mr-2 h-4 w-4" />
-                    <span>Profile</span>
+                    <User className="mr-2 h-3.5 w-3.5" />
+                    Profile
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-destructive focus:text-destructive">
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>Log out</span>
+                <DropdownMenuSeparator className="bg-zinc-800" />
+                <DropdownMenuItem
+                  onClick={handleLogout}
+                  className="navbar-dropdown-item text-red-400 focus:text-red-400 cursor-pointer"
+                >
+                  <LogOut className="mr-2 h-3.5 w-3.5" />
+                  Log out
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Link href="/auth">
-              <Button size="sm">Sign In</Button>
+            <Link href="/auth" className="navbar-signin">
+              Sign In
             </Link>
           )}
         </div>
+
       </div>
     </header>
   )

@@ -4,8 +4,6 @@ import type { NextRequest } from "next/server";
 export function middleware(request: NextRequest) {
   const token = request.cookies.get("authToken")?.value;
 
-  console.log("Auth token in middleware:", token); // Debug log
-
   // Define protected routes
   const protectedRoutes = ["/dashboard", "/resume-builder", "/resume-enhancer"];
 

@@ -15,6 +15,7 @@ export default function HeroSection() {
         alignItems: "center",
         justifyContent: "center",
         overflow: "hidden",
+        backgroundColor: "var(--background)",
       }}
     >
       {/* Subtle diagonal line pattern */}
@@ -27,12 +28,13 @@ export default function HeroSection() {
           backgroundImage: `
             repeating-linear-gradient(
               -45deg,
-              rgba(255,255,255,0.04) 0px,
-              rgba(255,255,255,0.04) 1px,
+              var(--border) 0px,
+              var(--border) 1px,
               transparent 1px,
               transparent 52px
             )
           `,
+          opacity: 0.5,
           maskImage: "radial-gradient(ellipse 65% 65% at 50% 50%, black 35%, transparent 100%)",
           WebkitMaskImage: "radial-gradient(ellipse 65% 65% at 50% 50%, black 35%, transparent 100%)",
         }}
@@ -48,32 +50,32 @@ export default function HeroSection() {
           right: 0,
           zIndex: 1,
           height: "1px",
-          background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.1) 30%, rgba(255,255,255,0.1) 70%, transparent 100%)",
+          background: "linear-gradient(90deg, transparent 0%, var(--border) 30%, var(--border) 70%, transparent 100%)",
         }}
       />
 
       {/* Corner accent — top left */}
       <svg
         aria-hidden="true"
-        style={{ position: "absolute", top: 0, left: 0, zIndex: 1 }}
+        style={{ position: "absolute", top: 0, left: 0, zIndex: 1, opacity: 0.5 }}
         width="120" height="80"
         viewBox="0 0 120 80"
         fill="none"
       >
-        <line x1="0" y1="79" x2="120" y2="79" stroke="rgba(255,255,255,0.12)" strokeWidth="1" />
-        <line x1="119" y1="0" x2="119" y2="80" stroke="rgba(255,255,255,0.12)" strokeWidth="1" />
+        <line x1="0" y1="79" x2="120" y2="79" stroke="var(--border)" strokeWidth="1" />
+        <line x1="119" y1="0" x2="119" y2="80" stroke="var(--border)" strokeWidth="1" />
       </svg>
 
       {/* Corner accent — top right */}
       <svg
         aria-hidden="true"
-        style={{ position: "absolute", top: 0, right: 0, zIndex: 1 }}
+        style={{ position: "absolute", top: 0, right: 0, zIndex: 1, opacity: 0.5 }}
         width="120" height="80"
         viewBox="0 0 120 80"
         fill="none"
       >
-        <line x1="0" y1="79" x2="120" y2="79" stroke="rgba(255,255,255,0.12)" strokeWidth="1" />
-        <line x1="1" y1="0" x2="1" y2="80" stroke="rgba(255,255,255,0.12)" strokeWidth="1" />
+        <line x1="0" y1="79" x2="120" y2="79" stroke="var(--border)" strokeWidth="1" />
+        <line x1="1" y1="0" x2="1" y2="80" stroke="var(--border)" strokeWidth="1" />
       </svg>
 
       {/* Horizontal center line — very subtle */}
@@ -85,7 +87,8 @@ export default function HeroSection() {
           right: "5%",
           top: "50%",
           height: "1px",
-          background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.04) 20%, rgba(255,255,255,0.04) 80%, transparent)",
+          background: "linear-gradient(90deg, transparent, var(--border) 20%, var(--border) 80%, transparent)",
+          opacity: 0.5,
           zIndex: 1,
         }}
       />
@@ -115,11 +118,11 @@ export default function HeroSection() {
             fontWeight: 500,
             letterSpacing: "0.1em",
             textTransform: "uppercase",
-            color: "#52525b",
-            border: "1px solid rgba(255,255,255,0.08)",
+            color: "var(--muted-foreground)",
+            border: "1px solid var(--border)",
             borderRadius: "9999px",
             padding: "0.28rem 0.85rem",
-            background: "rgba(255,255,255,0.03)",
+            background: "var(--muted)",
           }}
           className="hero-badge"
         >
@@ -145,7 +148,7 @@ export default function HeroSection() {
             fontWeight: 700,
             letterSpacing: "-0.045em",
             lineHeight: 1.06,
-            color: "#fff",
+            color: "var(--foreground)",
             margin: 0,
           }}
           className="hero-heading"
@@ -154,7 +157,7 @@ export default function HeroSection() {
           <br />
           <span
             style={{
-              background: "linear-gradient(135deg, #ffffff 0%, #555555 100%)",
+              background: "linear-gradient(135deg, var(--foreground) 0%, var(--muted-foreground) 100%)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               backgroundClip: "text",
@@ -168,7 +171,7 @@ export default function HeroSection() {
         <p
           style={{
             fontSize: "1rem",
-            color: "#3f3f46",
+            color: "var(--muted-foreground)",
             maxWidth: "480px",
             lineHeight: 1.75,
             margin: 0,
@@ -199,8 +202,8 @@ export default function HeroSection() {
               padding: "0.6rem 1.25rem",
               fontSize: "0.85rem",
               fontWeight: 500,
-              color: "#000",
-              background: "#fff",
+              color: "var(--primary-foreground)",
+              background: "var(--primary)",
               borderRadius: "7px",
               textDecoration: "none",
               whiteSpace: "nowrap",
@@ -220,11 +223,11 @@ export default function HeroSection() {
               padding: "0.6rem 1.25rem",
               fontSize: "0.85rem",
               fontWeight: 500,
-              color: "#71717a",
+              color: "var(--foreground)",
               background: "transparent",
               borderRadius: "7px",
               textDecoration: "none",
-              border: "1px solid rgba(255,255,255,0.1)",
+              border: "1px solid var(--border)",
               whiteSpace: "nowrap",
               letterSpacing: "-0.01em",
             }}
@@ -237,15 +240,15 @@ export default function HeroSection() {
         {/* Terminal hint */}
         <p
           style={{
-            fontFamily: "ui-monospace, 'Cascadia Code', monospace",
+            fontFamily: "var(--font-mono), ui-monospace, 'Cascadia Code', monospace",
             fontSize: "0.72rem",
-            color: "#27272a",
+            color: "var(--foreground)",
             letterSpacing: "0.02em",
             margin: 0,
           }}
           className="hero-hint"
         >
-          <span style={{ color: "#3f3f46", marginRight: "0.4rem" }}>▲</span>
+          <span style={{ color: "var(--muted-foreground)", marginRight: "0.4rem" }}>▲</span>
           npx resumeai create
         </p>
       </div>

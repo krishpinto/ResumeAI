@@ -125,17 +125,17 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-zinc-100 p-6 md:p-10 font-sans">
+    <div className="min-h-screen bg-background text-foreground p-6 md:p-10 font-sans">
       <div className="max-w-6xl mx-auto space-y-10">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-zinc-800 pb-6">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-border pb-6">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-white">My Resumes</h1>
-            <p className="text-sm text-zinc-400 mt-1.5">
+            <h1 className="text-2xl font-semibold tracking-tight text-foreground">My Resumes</h1>
+            <p className="text-sm text-muted-foreground mt-1.5">
               Manage and preview all your created resumes
             </p>
           </div>
           <Link href="/resume-builder/basic-info/">
-            <Button variant="outline" size="sm" className="gap-2 bg-black border-zinc-700 text-zinc-300 hover:text-white hover:bg-zinc-800 transition-colors h-9 px-4 rounded-md">
+            <Button variant="outline" size="sm" className="gap-2 bg-background border-border text-foreground hover:bg-muted transition-colors h-9 px-4 rounded-md">
               <Plus className="h-4 w-4" />
               Create New Resume
             </Button>
@@ -146,32 +146,32 @@ export default function Dashboard() {
           {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {Array.from({ length: 3 }).map((_, i) => (
-                <Card key={i} className="overflow-hidden bg-zinc-950/50 border-zinc-800/50">
+                <Card key={i} className="overflow-hidden bg-card border-border">
                   <CardHeader className="p-0">
-                    <Skeleton className="h-40 w-full rounded-none bg-zinc-900/50" />
+                    <Skeleton className="h-40 w-full rounded-none bg-muted" />
                   </CardHeader>
                   <CardContent className="p-5">
-                    <Skeleton className="h-5 w-2/3 mb-3 bg-zinc-800" />
-                    <Skeleton className="h-4 w-1/3 bg-zinc-800/80" />
+                    <Skeleton className="h-5 w-2/3 mb-3 bg-muted" />
+                    <Skeleton className="h-4 w-1/3 bg-muted/80" />
                   </CardContent>
-                  <CardFooter className="p-5 pt-0 gap-2 flex justify-end border-t border-zinc-800/30 mt-2">
-                    <Skeleton className="h-8 w-8 rounded-md bg-zinc-800/80 mt-4" />
-                    <Skeleton className="h-8 w-8 rounded-md bg-zinc-800/80 mt-4" />
+                  <CardFooter className="p-5 pt-0 gap-2 flex justify-end border-t border-border mt-2">
+                    <Skeleton className="h-8 w-8 rounded-md bg-muted/80 mt-4" />
+                    <Skeleton className="h-8 w-8 rounded-md bg-muted/80 mt-4" />
                   </CardFooter>
                 </Card>
               ))}
             </div>
           ) : resumes.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-24 text-center border border-dashed border-zinc-800/60 rounded-xl bg-zinc-950/30">
-              <div className="h-12 w-12 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center mb-4">
-                <FileText className="h-5 w-5 text-zinc-500" />
+            <div className="flex flex-col items-center justify-center py-24 text-center border border-dashed border-border rounded-xl bg-card">
+              <div className="h-12 w-12 rounded-full bg-muted border border-border flex items-center justify-center mb-4">
+                <FileText className="h-5 w-5 text-muted-foreground" />
               </div>
-              <h2 className="text-base font-medium text-zinc-200 mb-1.5">No resumes yet</h2>
-              <p className="text-sm text-zinc-500 mb-6 max-w-sm">
+              <h2 className="text-base font-medium text-foreground mb-1.5">No resumes yet</h2>
+              <p className="text-sm text-muted-foreground mb-6 max-w-sm">
                 Create your first resume to get started. It only takes a few minutes.
               </p>
               <Link href="/resume-builder/basic-info/">
-                <Button variant="outline" size="sm" className="gap-2 bg-black border-zinc-700 text-zinc-300 hover:text-white hover:bg-zinc-800">
+                <Button variant="outline" size="sm" className="gap-2 bg-background border-border text-foreground hover:bg-muted">
                   <Plus className="h-4 w-4" />
                   Create Resume
                 </Button>
@@ -184,25 +184,25 @@ export default function Dashboard() {
                 return (
                   <Card
                     key={resume.id}
-                    className="group flex flex-col overflow-hidden bg-[#0a0a0a] border-zinc-800 hover:border-zinc-700 transition-all duration-300 hover:shadow-lg hover:shadow-black/50"
+                    className="group flex flex-col overflow-hidden bg-card border-border hover:border-muted-foreground/30 transition-all duration-300 hover:shadow-lg hover:shadow-border/50"
                   >
-                    <CardHeader className="p-0 relative border-b border-zinc-800/60">
-                      <div className="relative h-44 bg-zinc-900 flex flex-col items-center justify-center p-6 text-center overflow-hidden">
+                    <CardHeader className="p-0 relative border-b border-border">
+                      <div className="relative h-44 bg-muted/50 flex flex-col items-center justify-center p-6 text-center overflow-hidden">
                         {/* Subtle background decoration */}
-                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.03)_0%,transparent_100%)] pointer-events-none" />
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(150,150,150,0.05)_0%,transparent_100%)] pointer-events-none" />
                         
-                        <div className="relative h-14 w-14 rounded-full bg-zinc-800 border border-zinc-700/50 flex items-center justify-center text-xl font-medium text-zinc-300 mb-4 shadow-inner">
+                        <div className="relative h-14 w-14 rounded-full bg-background border border-border flex items-center justify-center text-xl font-medium text-foreground mb-4 shadow-inner">
                           {titleInitial}
                         </div>
-                        <h3 className="relative font-medium text-zinc-300 line-clamp-1 text-sm z-10">
+                        <h3 className="relative font-medium text-foreground line-clamp-1 text-sm z-10">
                           {resume.title || "Untitled Resume"}
                         </h3>
                         
-                        <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-[2px] z-20">
+                        <div className="absolute inset-0 bg-background/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-[2px] z-20">
                           <Button
                             variant="secondary"
                             size="sm"
-                            className="gap-2 bg-white text-black hover:bg-zinc-200 border-0 font-medium"
+                            className="gap-2 bg-foreground text-background hover:bg-muted-foreground border-0 font-medium"
                             onClick={() => openPreview(resume.id)}
                           >
                             <Eye className="h-4 w-4" />
@@ -214,10 +214,10 @@ export default function Dashboard() {
                     <CardContent className="p-5 flex-1">
                       <div className="flex justify-between items-start gap-4">
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-medium text-zinc-200 text-base truncate">
+                          <h3 className="font-medium text-foreground text-base truncate">
                             {resume.title || "Untitled"}
                           </h3>
-                          <div className="flex items-center gap-1.5 mt-2 text-xs text-zinc-500">
+                          <div className="flex items-center gap-1.5 mt-2 text-xs text-muted-foreground">
                             <Clock className="h-3.5 w-3.5" />
                             <span>
                               {resume.lastUpdated
@@ -230,16 +230,16 @@ export default function Dashboard() {
                             </span>
                           </div>
                         </div>
-                        <Badge variant="outline" className="capitalize text-[10px] px-2 py-0.5 h-auto bg-zinc-900 border-zinc-800 text-zinc-400 font-medium whitespace-nowrap">
+                        <Badge variant="outline" className="capitalize text-[10px] px-2 py-0.5 h-auto bg-muted border-border text-muted-foreground font-medium whitespace-nowrap">
                           {resume.theme || "Default"}
                         </Badge>
                       </div>
                     </CardContent>
-                    <CardFooter className="p-4 pt-4 border-t border-zinc-800/40 gap-2 flex justify-end bg-zinc-950/30">
+                    <CardFooter className="p-4 pt-4 border-t border-border gap-2 flex justify-end bg-muted/30">
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+                        className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
                         onClick={() =>
                           router.push(`/resume-builder/basic-info/?id=${resume.id}`)
                         }
@@ -250,7 +250,7 @@ export default function Dashboard() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 text-zinc-500 hover:text-red-400 hover:bg-red-950/30 transition-colors"
+                        className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
                         onClick={() => confirmDelete(resume.id)}
                         title="Delete"
                       >
@@ -267,14 +267,14 @@ export default function Dashboard() {
         {/* Preview Dialog */}
         {previewOpen && selectedResume && (
           <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
-            <DialogContent className="bg-zinc-950 border-zinc-800 text-zinc-200 shadow-2xl">
+            <DialogContent className="bg-card border-border text-card-foreground shadow-2xl">
               <DialogHeader>
-                <DialogTitle className="text-zinc-100 text-xl">{selectedResume.title}</DialogTitle>
+                <DialogTitle className="text-foreground text-xl">{selectedResume.title}</DialogTitle>
               </DialogHeader>
               <div className="space-y-4 py-4">
-                <h2 className="text-lg font-medium text-zinc-200">{selectedResume.name}</h2>
-                <div className="bg-zinc-900/50 p-4 rounded-lg border border-zinc-800/50">
-                  <p className="text-sm text-zinc-400 leading-relaxed whitespace-pre-wrap">
+                <h2 className="text-lg font-medium text-foreground">{selectedResume.name}</h2>
+                <div className="bg-muted p-4 rounded-lg border border-border">
+                  <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
                     {selectedResume.summary}
                   </p>
                 </div>
@@ -286,10 +286,10 @@ export default function Dashboard() {
         {/* Delete Confirmation Dialog */}
         {deleteDialogOpen && (
           <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-            <DialogContent className="bg-zinc-950 border-zinc-800 text-zinc-200 shadow-2xl">
+            <DialogContent className="bg-card border-border text-card-foreground shadow-2xl">
               <DialogHeader>
-                <DialogTitle className="text-zinc-100 text-lg">Confirm Deletion</DialogTitle>
-                <DialogDescription className="text-zinc-400 mt-2">
+                <DialogTitle className="text-foreground text-lg">Confirm Deletion</DialogTitle>
+                <DialogDescription className="text-muted-foreground mt-2">
                   Are you sure you want to delete this resume? This action cannot be undone.
                 </DialogDescription>
               </DialogHeader>
@@ -297,11 +297,11 @@ export default function Dashboard() {
                 <Button
                   variant="outline"
                   onClick={() => setDeleteDialogOpen(false)}
-                  className="bg-transparent border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white"
+                  className="bg-transparent border-border text-foreground hover:bg-muted"
                 >
                   Cancel
                 </Button>
-                <Button variant="destructive" onClick={deleteResume} className="bg-red-600/90 text-white hover:bg-red-600 border-0">
+                <Button variant="destructive" onClick={deleteResume} className="bg-destructive text-destructive-foreground hover:bg-destructive/90 border-0">
                   Delete
                 </Button>
               </DialogFooter>

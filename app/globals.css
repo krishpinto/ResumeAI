@@ -124,8 +124,8 @@
 /* ── Navbar ─────────────────────────────────────────────────────────── */
 
 .navbar-root {
-  background: rgba(9, 9, 11, 0.92);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  background: var(--background);
+  border-bottom: 1px solid var(--border);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
 }
@@ -150,12 +150,12 @@
   font-size: 1rem;
   font-weight: 600;
   letter-spacing: -0.02em;
-  color: #fff;
+  color: var(--foreground);
   text-decoration: none;
   transition: opacity 0.15s ease;
 }
 .navbar-logo:hover { opacity: 0.75; }
-.navbar-logo-icon { color: #a1a1aa; }
+.navbar-logo-icon { color: var(--muted-foreground); }
 
 
 .navbar-links {
@@ -171,16 +171,16 @@
   position: relative;
   font-size: 0.875rem;
   font-weight: 400;
-  color: #71717a;
+  color: var(--muted-foreground);
   text-decoration: none;
   padding: 0.4rem 0.8rem;
   border-radius: 6px;
   letter-spacing: 0.005em;
   transition: color 0.15s ease;
 }
-.navbar-link:hover { color: #e4e4e7; }
+.navbar-link:hover { color: var(--foreground); }
 .navbar-link.active {
-  color: #fff;
+  color: var(--foreground);
   font-weight: 500;
 }
 .navbar-link.active::after {
@@ -190,8 +190,9 @@
   left: 0.65rem;
   right: 0.65rem;
   height: 1.5px;
-  background: rgba(255,255,255,0.7);
+  background: var(--foreground);
   border-radius: 99px;
+  opacity: 0.7;
 }
 
 /* Right section */
@@ -208,30 +209,30 @@
   justify-content: center;
   width: 28px;
   height: 28px;
-  color: #a1a1aa;
+  color: var(--muted-foreground);
   border-radius: 6px;
   text-decoration: none;
   transition: color 0.15s ease;
 }
-.navbar-social-link:hover { color: #e4e4e7; }
+.navbar-social-link:hover { color: var(--foreground); }
 
 /* Sign In button */
 .navbar-signin {
   font-size: 0.78rem;
   font-weight: 500;
-  color: #e4e4e7;
+  color: var(--foreground);
   text-decoration: none;
   padding: 0.3rem 0.85rem;
-  border: 1px solid rgba(255,255,255,0.15);
+  border: 1px solid var(--border);
   border-radius: 9999px;
   background: transparent;
   letter-spacing: 0.01em;
   transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 .navbar-signin:hover {
-  background: rgba(255,255,255,0.08);
-  border-color: rgba(255,255,255,0.3);
-  color: #fff;
+  background: var(--accent);
+  border-color: var(--border);
+  color: var(--accent-foreground);
 }
 
 /* Avatar button */
@@ -244,32 +245,32 @@
   cursor: pointer;
   border-radius: 9999px;
   padding: 1px;
-  border: 1px solid rgba(255,255,255,0.12);
+  border: 1px solid var(--border);
   transition: border-color 0.15s ease;
 }
-.navbar-avatar-btn:hover { border-color: rgba(255,255,255,0.3); }
+.navbar-avatar-btn:hover { border-color: var(--foreground); }
 .navbar-avatar-fallback {
-  background: #27272a;
-  color: #a1a1aa;
+  background: var(--muted);
+  color: var(--muted-foreground);
   font-size: 0.65rem;
   font-weight: 600;
 }
 
 /* Dropdown */
 .navbar-dropdown {
-  background: #111113;
-  border: 1px solid rgba(255,255,255,0.08);
+  background: var(--popover);
+  border: 1px solid var(--border);
   border-radius: 10px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-  color: #e4e4e7;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  color: var(--popover-foreground);
 }
 .navbar-dropdown-item {
   font-size: 0.8rem;
-  color: #a1a1aa;
+  color: var(--muted-foreground);
   border-radius: 6px;
   transition: background 0.1s ease, color 0.1s ease;
 }
-.navbar-dropdown-item:hover { background: rgba(255,255,255,0.05); color: #fff; }
+.navbar-dropdown-item:hover { background: var(--accent); color: var(--accent-foreground); }
 
 /* ── Hero Section ───────────────────────────────────────────────────── */
 

@@ -101,20 +101,20 @@ export default function Navbar() {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="navbar-dropdown w-52">
                 <div className="px-3 py-2">
-                  {user.displayName && <p className="text-sm font-medium text-white">{user.displayName}</p>}
-                  {user.email && <p className="text-xs text-zinc-500">{user.email}</p>}
+                  {user.displayName && <p className="text-sm font-medium text-foreground">{user.displayName}</p>}
+                  {user.email && <p className="text-xs text-muted-foreground">{user.email}</p>}
                 </div>
-                <DropdownMenuSeparator className="bg-zinc-800" />
+                <DropdownMenuSeparator className="bg-border" />
                 <DropdownMenuItem asChild className="navbar-dropdown-item">
                   <Link href="/profile" className="cursor-pointer w-full">
                     <User className="mr-2 h-3.5 w-3.5" />
                     Profile
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuSeparator className="bg-zinc-800" />
+                <DropdownMenuSeparator className="bg-border" />
                 <DropdownMenuItem
                   onClick={handleLogout}
-                  className="navbar-dropdown-item text-red-400 focus:text-red-400 cursor-pointer"
+                  className="navbar-dropdown-item text-destructive focus:text-destructive cursor-pointer"
                 >
                   <LogOut className="mr-2 h-3.5 w-3.5" />
                   Log out
